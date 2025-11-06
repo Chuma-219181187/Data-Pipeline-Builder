@@ -30,9 +30,16 @@ except ImportError:
         def generate_sample_data(self):
             return self._create_sample_data()
         def _create_sample_data(self):
-            # Generate sample e-commerce data with correct column names
+            # Generate sample South African e-commerce data with ZAR pricing
             np.random.seed(42)
             dates = pd.date_range('2023-01-01', periods=1000, freq='D')
+            
+            # South African provinces (using proper abbreviations)
+            sa_provinces = ['GP', 'WC', 'KZN', 'EC', 'LP', 'NW', 'MP', 'FS', 'NC']
+            sa_cities = [
+                'Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 
+                'Bloemfontein', 'East London', 'Pietermaritzburg', 'Polokwane', 'Nelspruit'
+            ]
             
             # Create orders data
             orders_data = {
@@ -42,26 +49,28 @@ except ImportError:
                 'order_status': np.random.choice(['delivered', 'shipped', 'processing'], 1000, p=[0.7, 0.2, 0.1])
             }
             
-            # Create customers data
+            # Create customers data with South African locations
             customers_data = {
                 'customer_id': [f'customer_{i}' for i in range(1, 501)],
-                'customer_state': np.random.choice(['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'DF'], 500),
-                'customer_city': np.random.choice(['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Porto Alegre'], 500)
+                'customer_state': np.random.choice(sa_provinces, 500),
+                'customer_city': np.random.choice(sa_cities, 500)
             }
             
-            # Create order items data
+            # Create order items data with ZAR pricing (1 USD = ~18.5 ZAR)
             order_items_data = {
                 'order_id': [f'order_{i}' for i in range(1, 1001)],
                 'product_id': [f'product_{i}' for i in np.random.randint(1, 200, 1000)],
-                'price': np.random.normal(150, 50, 1000).clip(10, 1000),
-                'freight_value': np.random.normal(20, 5, 1000).clip(5, 50)
+                'price': np.random.normal(2800, 1200, 1000).clip(150, 25000),  # ZAR pricing
+                'freight_value': np.random.normal(350, 100, 1000).clip(50, 800)  # ZAR delivery costs
             }
             
-            # Create products data
+            # Create products data with South African relevant categories
             products_data = {
                 'product_id': [f'product_{i}' for i in range(1, 201)],
                 'product_category_name': np.random.choice([
-                    'Electronics', 'Fashion', 'Home & Garden', 'Sports', 'Books', 'Beauty', 'Health'
+                    'Electronics & Tech', 'Fashion & Clothing', 'Home & Lifestyle', 
+                    'Sports & Outdoors', 'Books & Media', 'Beauty & Health', 
+                    'Automotive', 'Groceries & Food'
                 ], 200)
             }
             
@@ -77,6 +86,22 @@ except ImportError:
     def get_logger(name):
         import logging
         return logging.getLogger(name)
+
+# Helper function for South African provinces
+def get_sa_province_name(code):
+    """Map province codes to full names"""
+    province_map = {
+        'GP': 'Gauteng',
+        'WC': 'Western Cape', 
+        'KZN': 'KwaZulu-Natal',
+        'EC': 'Eastern Cape',
+        'LP': 'Limpopo',
+        'NW': 'North West',
+        'MP': 'Mpumalanga',
+        'FS': 'Free State',
+        'NC': 'Northern Cape'
+    }
+    return province_map.get(code, code)
 
 # Configure page
 st.set_page_config(
@@ -221,13 +246,13 @@ def create_revenue_chart(datasets):
             daily_revenue,
             x='order_purchase_timestamp',
             y='total_amount',
-            title='Daily Revenue Trend',
-            labels={'total_amount': 'Revenue ($)', 'order_purchase_timestamp': 'Date'}
+            title='Daily Revenue Trend (South African E-commerce)',
+            labels={'total_amount': 'Revenue (ZAR)', 'order_purchase_timestamp': 'Date'}
         )
         
         fig.update_layout(
             xaxis_title="Date",
-            yaxis_title="Revenue ($)",
+            yaxis_title="Revenue (ZAR)",
             showlegend=False
         )
         
@@ -264,8 +289,8 @@ def create_state_analysis(datasets):
             state_data.head(10),
             x='customer_state',
             y='total_revenue',
-            title='Top 10 States by Revenue',
-            labels={'total_revenue': 'Revenue ($)', 'customer_state': 'State'},
+            title='Top 10 South African Provinces by Revenue',
+            labels={'total_revenue': 'Revenue (ZAR)', 'customer_state': 'Province'},
             color='total_revenue',
             color_continuous_scale='Blues'
         )
@@ -420,7 +445,7 @@ def main():
     with col1:
         st.metric(
             label="💰 Total Revenue",
-            value=f"${kpis.get('total_revenue', 0):,.2f}",
+            value=f"R{kpis.get('total_revenue', 0):,.2f}",
             delta=None
         )
     
@@ -441,7 +466,7 @@ def main():
     with col4:
         st.metric(
             label="💵 Avg Order Value",
-            value=f"${kpis.get('avg_order_value', 0):.2f}",
+            value=f"R{kpis.get('avg_order_value', 0):,.2f}",
             delta=None
         )
     

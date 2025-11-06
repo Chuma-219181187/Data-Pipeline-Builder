@@ -86,24 +86,41 @@ def create_monthly_sales_trend(datasets):
     return fig, monthly_sales
 
 def create_seller_performance_analysis(datasets):
-    """Analyze seller performance"""
-    sellers = datasets['sellers']
+    """Analyze product category performance (adapted for available data)"""
     order_items = datasets['order_items']
     orders = datasets['orders']
+    products = datasets.get('products', pd.DataFrame())
     
     # Merge data
-    seller_orders = order_items.merge(orders, on='order_id', how='inner')
-    seller_performance = seller_orders.merge(sellers, on='seller_id', how='inner')
+    sales_data = order_items.merge(orders, on='order_id', how='inner')
     
-    # Calculate metrics per seller
-    seller_metrics = seller_performance.groupby(['seller_id', 'seller_state']).agg({
+    # If products data available, merge it
+    if not products.empty and 'product_category_name' in products.columns:
+        sales_data = sales_data.merge(products, on='product_id', how='left')
+        category_col = 'product_category_name'
+    else:
+        # Create mock categories based on product_id for demo
+        np.random.seed(42)
+        categories = ['Electronics', 'Fashion', 'Home & Garden', 'Sports', 'Books', 'Beauty', 'Health']
+        sales_data['product_category_name'] = np.random.choice(categories, len(sales_data))
+        category_col = 'product_category_name'
+    
+    # Calculate metrics per category (instead of seller)
+    category_metrics = sales_data.groupby(category_col).agg({
         'price': ['sum', 'count', 'mean'],
-        'freight_value': 'sum',
         'order_id': 'nunique'
     }).reset_index()
     
-    seller_metrics.columns = ['seller_id', 'seller_state', 'total_revenue', 'items_sold', 'avg_price', 'total_freight', 'unique_orders']
-    seller_metrics['total_value'] = seller_metrics['total_revenue'] + seller_metrics['total_freight']
+    # Flatten column names
+    category_metrics.columns = [category_col, 'total_revenue', 'items_sold', 'avg_price', 'unique_orders']
+    category_metrics['total_value'] = category_metrics['total_revenue']
+    
+    # Rename for compatibility with existing code
+    seller_metrics = category_metrics.rename(columns={
+        category_col: 'seller_id',
+        category_col: 'seller_state'  # Use category as state for now
+    })
+    seller_metrics['seller_state'] = seller_metrics['seller_id']  # Duplicate for compatibility
     
     return seller_metrics
 
@@ -133,69 +150,69 @@ def main():
             latest_growth = monthly_data['growth_rate'].iloc[-1]
             st.metric("Latest Growth Rate", f"{latest_growth:.1f}%")
     
-    # Seller performance
-    st.subheader("🏪 Seller Performance Analysis")
+    # Product Category Performance
+    st.subheader("🛍️ Product Category Performance Analysis")
     
     seller_metrics = create_seller_performance_analysis(datasets)
     
-    # Top sellers chart
+    # Top categories chart
     top_sellers = seller_metrics.nlargest(15, 'total_value')
     
     fig_sellers = px.bar(
         top_sellers,
         x='seller_id',
         y='total_value',
-        color='seller_state',
-        title='Top 15 Sellers by Revenue',
-        labels={'total_value': 'Total Revenue ($)', 'seller_id': 'Seller ID'}
+        color='seller_id',
+        title='Product Category Performance by Revenue',
+        labels={'total_value': 'Total Revenue ($)', 'seller_id': 'Product Category'}
     )
-    fig_sellers.update_xaxes(tickangle=45)
+    fig_sellers.update_xaxes(tickangle=45, title="Product Categories")
     st.plotly_chart(fig_sellers, use_container_width=True)
     
-    # Seller state distribution
+    # Category distribution
     col1, col2 = st.columns(2)
     
     with col1:
-        state_sellers = seller_metrics.groupby('seller_state')['total_value'].sum().reset_index()
+        category_dist = seller_metrics.groupby('seller_id')['total_value'].sum().reset_index()
         fig_states = px.pie(
-            state_sellers,
+            category_dist,
             values='total_value',
-            names='seller_state',
-            title='Revenue by Seller State'
+            names='seller_id',
+            title='Revenue Distribution by Product Category'
         )
         st.plotly_chart(fig_states, use_container_width=True)
     
     with col2:
-        # Seller distribution scatter plot
+        # Category performance scatter plot
         fig_scatter = px.scatter(
             seller_metrics,
             x='items_sold',
             y='total_value',
-            color='seller_state',
+            color='seller_id',
             size='unique_orders',
-            title='Seller Performance: Items vs Revenue',
+            title='Category Performance: Items vs Revenue',
             labels={'items_sold': 'Items Sold', 'total_value': 'Total Revenue ($)'}
         )
         st.plotly_chart(fig_scatter, use_container_width=True)
     
-    # Detailed seller table
-    st.subheader("📊 Detailed Seller Metrics")
+    # Detailed category table
+    st.subheader("📊 Detailed Category Metrics")
     
     # Add filters
     col1, col2 = st.columns(2)
     with col1:
-        min_revenue = st.number_input("Minimum Revenue", min_value=0, value=1000)
+        min_revenue = st.number_input("Minimum Revenue", min_value=0, value=100)
     with col2:
-        selected_states = st.multiselect(
-            "Filter by State", 
-            options=seller_metrics['seller_state'].unique(),
-            default=seller_metrics['seller_state'].unique()
+        selected_categories = st.multiselect(
+            "Filter by Category", 
+            options=seller_metrics['seller_id'].unique(),
+            default=seller_metrics['seller_id'].unique()
         )
     
     # Apply filters
     filtered_sellers = seller_metrics[
         (seller_metrics['total_value'] >= min_revenue) &
-        (seller_metrics['seller_state'].isin(selected_states))
+        (seller_metrics['seller_id'].isin(selected_categories))
     ].sort_values('total_value', ascending=False)
     
     # Display table
@@ -215,12 +232,12 @@ def main():
     )
     
     # Export functionality
-    if st.button("📥 Export Seller Data to CSV"):
+    if st.button("📥 Export Category Data to CSV"):
         csv = filtered_sellers.to_csv(index=False)
         st.download_button(
             label="Download CSV",
             data=csv,
-            file_name=f"seller_performance_{datetime.now().strftime('%Y%m%d')}.csv",
+            file_name=f"category_performance_{datetime.now().strftime('%Y%m%d')}.csv",
             mime="text/csv"
         )
 
