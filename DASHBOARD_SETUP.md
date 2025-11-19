@@ -82,7 +82,7 @@ pip install numpy
 
 ### Visualizations:
 - 📈 Monthly revenue trends
-- 🗺️ Revenue by Brazilian states
+- 🗺️ Revenue by US states
 - 🛍️ Product category performance
 - 📊 Customer behavior analysis
 - 📋 Data quality metrics
@@ -135,4 +135,13 @@ Once your dashboard is running:
 
 ---
 
-*Built for Week 4 Data Pipeline Project | Brazilian E-commerce Dataset Analysis*
+## 👥 Development Team
+
+**Created by:**
+- **Odwa Manitshana** - Lead Developer & Dashboard Specialist
+- **Chuma Nxazonke** - Data Analytics & Pipeline Developer
+
+---
+
+*Built for Week 4 Data Pipeline Project | US E-commerce Dataset Analysis*  
+*Repository: https://github.com/Chuma-219181187/Data-Pipeline-Builder*

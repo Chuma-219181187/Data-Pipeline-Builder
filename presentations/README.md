@@ -18,7 +18,7 @@ This folder contains all presentation materials for the Data Pipeline Builder pr
 ### 📋 Content Overview
 1. **Title Slide** - Project branding and team info
 2. **Project Overview** - Mission, objectives, and scope
-3. **Dataset Analysis** - Brazilian e-commerce data breakdown
+3. **Dataset Analysis** - US e-commerce data breakdown
 4. **Database Architecture** - PostgreSQL schema design
 5. **SQL Analytics** - Complex queries and performance
 6. **ETL Pipeline** - Extract, Transform, Load components

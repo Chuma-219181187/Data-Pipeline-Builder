@@ -1,6 +1,6 @@
 # 📊 E-Commerce Analytics Dashboard
 
-Interactive Streamlit dashboard for Brazilian E-commerce data analysis and monitoring.
+Interactive Streamlit dashboard for US E-commerce data analysis and monitoring.
 
 ## 🌟 Features
 

@@ -30,15 +30,15 @@ except ImportError:
         def generate_sample_data(self):
             return self._create_sample_data()
         def _create_sample_data(self):
-            # Generate sample South African e-commerce data with ZAR pricing
+            # Generate sample e-commerce data with USD pricing
             np.random.seed(42)
             dates = pd.date_range('2023-01-01', periods=1000, freq='D')
             
-            # South African provinces (using proper abbreviations)
-            sa_provinces = ['GP', 'WC', 'KZN', 'EC', 'LP', 'NW', 'MP', 'FS', 'NC']
-            sa_cities = [
-                'Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 
-                'Bloemfontein', 'East London', 'Pietermaritzburg', 'Polokwane', 'Nelspruit'
+            # US states (using proper abbreviations)
+            us_states = ['CA', 'TX', 'FL', 'NY', 'PA', 'IL', 'OH', 'GA', 'NC', 'MI']
+            us_cities = [
+                'Los Angeles', 'New York', 'Chicago', 'Houston', 'Phoenix', 
+                'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'
             ]
             
             # Create orders data
@@ -49,26 +49,26 @@ except ImportError:
                 'order_status': np.random.choice(['delivered', 'shipped', 'processing'], 1000, p=[0.7, 0.2, 0.1])
             }
             
-            # Create customers data with South African locations
+            # Create customers data with US locations
             customers_data = {
                 'customer_id': [f'customer_{i}' for i in range(1, 501)],
-                'customer_state': np.random.choice(sa_provinces, 500),
-                'customer_city': np.random.choice(sa_cities, 500)
+                'customer_state': np.random.choice(us_states, 500),
+                'customer_city': np.random.choice(us_cities, 500)
             }
             
-            # Create order items data with ZAR pricing (1 USD = ~18.5 ZAR)
+            # Create order items data with USD pricing
             order_items_data = {
                 'order_id': [f'order_{i}' for i in range(1, 1001)],
                 'product_id': [f'product_{i}' for i in np.random.randint(1, 200, 1000)],
-                'price': np.random.normal(2800, 1200, 1000).clip(150, 25000),  # ZAR pricing
-                'freight_value': np.random.normal(350, 100, 1000).clip(50, 800)  # ZAR delivery costs
+                'price': np.random.normal(150, 65, 1000).clip(8, 1350),  # USD pricing
+                'freight_value': np.random.normal(19, 5, 1000).clip(3, 43)  # USD delivery costs
             }
             
-            # Create products data with South African relevant categories
+            # Create products data with US relevant categories
             products_data = {
                 'product_id': [f'product_{i}' for i in range(1, 201)],
                 'product_category_name': np.random.choice([
-                    'Electronics & Tech', 'Fashion & Clothing', 'Home & Lifestyle', 
+                    'Electronics & Tech', 'Fashion & Clothing', 'Home & Garden', 
                     'Sports & Outdoors', 'Books & Media', 'Beauty & Health', 
                     'Automotive', 'Groceries & Food'
                 ], 200)
@@ -87,21 +87,22 @@ except ImportError:
         import logging
         return logging.getLogger(name)
 
-# Helper function for South African provinces
-def get_sa_province_name(code):
-    """Map province codes to full names"""
-    province_map = {
-        'GP': 'Gauteng',
-        'WC': 'Western Cape', 
-        'KZN': 'KwaZulu-Natal',
-        'EC': 'Eastern Cape',
-        'LP': 'Limpopo',
-        'NW': 'North West',
-        'MP': 'Mpumalanga',
-        'FS': 'Free State',
-        'NC': 'Northern Cape'
+# Helper function for US states
+def get_us_state_name(code):
+    """Map state codes to full names"""
+    state_map = {
+        'CA': 'California',
+        'TX': 'Texas', 
+        'FL': 'Florida',
+        'NY': 'New York',
+        'PA': 'Pennsylvania',
+        'IL': 'Illinois',
+        'OH': 'Ohio',
+        'GA': 'Georgia',
+        'NC': 'North Carolina',
+        'MI': 'Michigan'
     }
-    return province_map.get(code, code)
+    return state_map.get(code, code)
 
 # Configure page
 st.set_page_config(
@@ -171,7 +172,7 @@ def load_data():
         
         customers_data = pd.DataFrame({
             'customer_id': [f'customer_{i}' for i in range(1, 51)],
-            'customer_state': np.random.choice(['SP', 'RJ', 'MG'], 50)
+            'customer_state': np.random.choice(['CA', 'TX', 'FL'], 50)
         })
         
         order_items_data = pd.DataFrame({

@@ -192,7 +192,7 @@
         
         <div class="metrics-grid">
             <div class="metric-card revenue">
-                <div class="metric-value">R15,673,437</div>
+                <div class="metric-value">$847,329</div>
                 <div class="metric-label">Total Revenue</div>
             </div>
             <div class="metric-card orders">
@@ -204,7 +204,7 @@
                 <div class="metric-label">Customers</div>
             </div>
             <div class="metric-card aov">
-                <div class="metric-value">R7,298</div>
+                <div class="metric-value">$394</div>
                 <div class="metric-label">Avg Order Value</div>
             </div>
         </div>
@@ -212,7 +212,7 @@
         <div class="charts-section">
             <div class="chart-container">
                 <div class="chart-header">
-                    <h3>📈 Monthly Revenue Trend (ZAR)</h3>
+                    <h3>📈 Monthly Revenue Trend (USD)</h3>
                 </div>
                 <div class="chart-content">
                     <div id="revenueChart" style="height: 400px;"></div>
@@ -240,15 +240,15 @@
         
         <div class="footer">
             <p>📊 E-Commerce Analytics Dashboard | Built with HTML5, CSS3 & Plotly.js</p>
-            <p>Data Pipeline Project - Week 4 | Powered by South African E-commerce Dataset</p>
+            <p>Data Pipeline Project - Week 4 | Powered by US E-commerce Dataset</p>
         </div>
     </div>
     
     <script>
-        // Sample South African e-commerce data in ZAR
+        // Sample US e-commerce data in USD
         const monthlyRevenue = {
             x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            y: [832500, 962000, 1128500, 1073000, 1239500, 1350500, 1276500, 1387500, 1517000, 1443000, 1572500, 1683500],
+            y: [45000, 52000, 61000, 58000, 67000, 73000, 69000, 75000, 82000, 78000, 85000, 91000],
             type: 'scatter',
             mode: 'lines+markers',
             marker: {color: '#2196F3', size: 8},
@@ -256,8 +256,8 @@
         };
         
         const stateRevenue = {
-            x: ['GP', 'WC', 'KZN', 'EC', 'LP', 'NW', 'MP', 'FS', 'NC'],
-            y: [5275000, 2886000, 1813000, 1609500, 1406000, 1202500, 999000, 795500, 592000],
+            x: ['CA', 'TX', 'FL', 'NY', 'PA', 'IL', 'OH', 'GA', 'NC'],
+            y: [285000, 156000, 98000, 87000, 76000, 65000, 54000, 43000, 32000],
             type: 'bar',
             marker: {color: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE']}
         };
@@ -282,7 +282,7 @@
         const layout1 = {
             title: '',
             xaxis: {title: 'Month'},
-            yaxis: {title: 'Revenue (ZAR)'},
+            yaxis: {title: 'Revenue (USD)'},
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             font: {family: 'Segoe UI, sans-serif'}
@@ -290,8 +290,8 @@
         
         const layout2 = {
             title: '',
-            xaxis: {title: 'Province'},
-            yaxis: {title: 'Revenue (ZAR)'},
+            xaxis: {title: 'State'},
+            yaxis: {title: 'Revenue (USD)'},
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             font: {family: 'Segoe UI, sans-serif'}
