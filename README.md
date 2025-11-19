@@ -233,13 +233,6 @@ Structured logging with rotation and different log levels.
 - [ ] Containerization with Docker
 - [ ] CI/CD pipeline automation
 
-## 📞 Contact
-
-**Developer:** [Your Name]
-**Email:** [Your Email]
-**GitHub:** [Your GitHub Profile]
-**LinkedIn:** [Your LinkedIn Profile]
-
 ---
 
 *This project was developed as part of Week 4 coursework focusing on SQL fundamentals and ETL pipeline development.*
